@@ -18,6 +18,13 @@ from sklearn.metrics import silhouette_score, calinski_harabasz_score
 import hdbscan
 import matplotlib.pyplot as plt
 
+# Import Tufte plotting utilities
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from tda_utils import setup_tufte_plot, TufteColors
+
+
 # Configuration
 DATA_PATH = Path('../../egrid_all_plants_1996-2023.parquet')
 TARGET_YEAR = 2023
@@ -184,8 +191,6 @@ def visualize_results(df, kmeans_labels, gmm_labels, hdbscan_labels, X_scaled, f
     ax1.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]*100:.1f}%)', fontweight='bold')
     ax1.set_title('K-Means Clustering', fontsize=12, fontweight='bold')
     plt.colorbar(scatter1, ax=ax1, label='Cluster')
-    ax1.grid(True, alpha=0.3)
-    
     ax2 = fig.add_subplot(gs[0, 1])
     scatter2 = ax2.scatter(X_pca[:, 0], X_pca[:, 1], c=gmm_labels, 
                           cmap='tab10', alpha=0.6, s=30, edgecolors='black', linewidths=0.3)
@@ -193,8 +198,6 @@ def visualize_results(df, kmeans_labels, gmm_labels, hdbscan_labels, X_scaled, f
     ax2.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]*100:.1f}%)', fontweight='bold')
     ax2.set_title('GMM Clustering', fontsize=12, fontweight='bold')
     plt.colorbar(scatter2, ax=ax2, label='Cluster')
-    ax2.grid(True, alpha=0.3)
-    
     ax3 = fig.add_subplot(gs[0, 2])
     # For HDBSCAN, use -1 for noise
     scatter3 = ax3.scatter(X_pca[:, 0], X_pca[:, 1], c=hdbscan_labels, 
@@ -203,8 +206,6 @@ def visualize_results(df, kmeans_labels, gmm_labels, hdbscan_labels, X_scaled, f
     ax3.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]*100:.1f}%)', fontweight='bold')
     ax3.set_title('HDBSCAN Clustering', fontsize=12, fontweight='bold')
     plt.colorbar(scatter3, ax=ax3, label='Cluster')
-    ax3.grid(True, alpha=0.3)
-    
     # Row 2: Feature space views
     ax4 = fig.add_subplot(gs[1, 0])
     ax4.scatter(df['log_generation'], df['carbon_intensity'], 
@@ -212,16 +213,12 @@ def visualize_results(df, kmeans_labels, gmm_labels, hdbscan_labels, X_scaled, f
     ax4.set_xlabel('Log Generation', fontweight='bold')
     ax4.set_ylabel('Carbon Intensity', fontweight='bold')
     ax4.set_title('Generation vs Carbon (K-Means)', fontsize=12, fontweight='bold')
-    ax4.grid(True, alpha=0.3)
-    
     ax5 = fig.add_subplot(gs[1, 1])
     ax5.scatter(df['capacity_factor'], df['carbon_intensity'], 
                c=kmeans_labels, cmap='tab10', alpha=0.6, s=30, edgecolors='none')
     ax5.set_xlabel('Capacity Factor', fontweight='bold')
     ax5.set_ylabel('Carbon Intensity', fontweight='bold')
     ax5.set_title('Efficiency vs Carbon (K-Means)', fontsize=12, fontweight='bold')
-    ax5.grid(True, alpha=0.3)
-    
     # Cluster size comparison
     ax6 = fig.add_subplot(gs[1, 2])
     kmeans_counts = pd.Series(kmeans_labels).value_counts().sort_index()
@@ -241,8 +238,6 @@ def visualize_results(df, kmeans_labels, gmm_labels, hdbscan_labels, X_scaled, f
     ax6.set_xticks(x)
     ax6.set_xticklabels(kmeans_counts.index)
     ax6.legend()
-    ax6.grid(True, alpha=0.3, axis='y')
-    
     # Row 3: Cluster profiles
     ax7 = fig.add_subplot(gs[2, :])
     
@@ -285,8 +280,6 @@ def visualize_results(df, kmeans_labels, gmm_labels, hdbscan_labels, X_scaled, f
     ax7.set_xticklabels([f"{row['Cluster']}\n(n={row['Size']:,})" 
                          for _, row in profile_df.iterrows()])
     ax7.legend(fontsize=10)
-    ax7.grid(True, alpha=0.3, axis='y')
-    
     plt.suptitle(f'Clustering Analysis - {len(df):,} Power Plants ({TARGET_YEAR})',
                 fontsize=16, fontweight='bold', y=0.995)
     

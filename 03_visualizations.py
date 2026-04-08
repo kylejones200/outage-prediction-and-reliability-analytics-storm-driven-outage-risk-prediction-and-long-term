@@ -24,6 +24,13 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from plot_style import set_tufte_defaults, apply_tufte_style, save_tufte_figure, COLORS
 
+# Import Tufte plotting utilities
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from tda_utils import setup_tufte_plot, TufteColors
+
+
 
 
 
@@ -193,8 +200,6 @@ def generate_outage_dashboard():
     ax1.set_ylabel('Number of Events', fontsize=11, weight='bold')
     ax1.set_title('Major Outage Events by Severity (2024)', fontsize=12, weight='bold')
     ax1.legend(loc='upper right', ncol=3)
-    ax1.grid(True, alpha=0.3, axis='y', linestyle='--')
-    
     # State outage summary
     ax2 = fig.add_subplot(gs[1, :2])
     states = ['Texas', 'Florida', 'California', 'Louisiana', 'Michigan', 
@@ -224,7 +229,7 @@ def generate_outage_dashboard():
     ax2_1.set_xticklabels(states, rotation=45, ha='right')
     ax2_1.tick_params(axis='y', labelcolor=COLORS['black'])
     ax2_2.tick_params(axis='y', labelcolor=COLORS['gray'])
-    ax2_1.grid(True, alpha=0.3, axis='y', linestyle='--')
+    ax2_1.grid(False)
     
     # Legend combining both axes
     lines1, labels1 = ax2_1.get_legend_handles_labels()
@@ -263,7 +268,6 @@ def generate_outage_dashboard():
     ax4.set_ylabel('Avg Customers Out (1000s)', fontsize=10, weight='bold')
     ax4.set_title('Hourly Outage Pattern', fontsize=11, weight='bold')
     ax4.legend(fontsize=8)
-    ax4.grid(True, alpha=0.3, linestyle='--')
     ax4.set_xticks(hours[::3])
     
     # Monthly pattern
@@ -280,7 +284,6 @@ def generate_outage_dashboard():
     ax5.set_title('Monthly Event Count', fontsize=11, weight='bold')
     ax5.set_xticks(range(12))
     ax5.set_xticklabels(months, rotation=45, ha='right')
-    ax5.grid(True, alpha=0.3, axis='y', linestyle='--')
     ax5.axhline(y=200, color=COLORS['black'], linestyle='--', linewidth=1.5, 
                 alpha=0.7, label='High Activity Threshold')
     ax5.legend(fontsize=8)
@@ -302,8 +305,6 @@ def generate_outage_dashboard():
     ax6.set_ylabel('Load (MW)', fontsize=10, weight='bold')
     ax6.set_title('Load Impact Analysis', fontsize=11, weight='bold')
     ax6.legend(fontsize=8)
-    ax6.grid(True, alpha=0.3, linestyle='--')
-    
     # Add annotation
     ax6.annotate('Outage-Driven\nLoad Drop', xy=(13, observed_load[13]), 
                 xytext=(15, 22000),
@@ -347,7 +348,6 @@ def generate_temporal_patterns():
     ax1.set_title('Hourly Outage Pattern with Confidence Intervals', 
                  fontsize=12, weight='bold')
     ax1.legend(loc='upper left', fontsize=9)
-    ax1.grid(True, alpha=0.3, linestyle='--')
     ax1.set_xticks(hours[::2])
     
     # Day of week pattern
@@ -363,8 +363,6 @@ def generate_temporal_patterns():
     ax2.set_title('Outage Events by Day of Week', fontsize=11, weight='bold')
     ax2.set_xticks(range(7))
     ax2.set_xticklabels(dow_labels)
-    ax2.grid(True, alpha=0.3, axis='y', linestyle='--')
-    
     for i, (bar, count) in enumerate(zip(bars, dow_events)):
         ax2.text(i, bar.get_height() + 3, str(count), 
                 ha='center', va='bottom', fontsize=9, weight='bold')
@@ -389,8 +387,6 @@ def generate_temporal_patterns():
     ax3.set_xticks(range(12))
     ax3.set_xticklabels(months)
     ax3.legend(fontsize=9)
-    ax3.grid(True, alpha=0.3, linestyle='--')
-    
     plt.suptitle('Temporal Outage Pattern Analysis', 
                 fontsize=14, weight='bold')
     
