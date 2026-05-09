@@ -8,6 +8,12 @@ import pandas as pd
 import numpy as np
 import warnings
 from pathlib import Path
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 warnings.filterwarnings('ignore')
 
 from sklearn.preprocessing import StandardScaler
@@ -33,7 +39,7 @@ RANDOM_STATE = 42
 
 def load_and_prepare_data(year):
     """Load and engineer features for clustering"""
-    print(f"Loading {year} data...")
+    logger.info(f"Loading {year} data...")
     plants = pd.read_parquet(DATA_PATH)
     df = plants[plants['data_year'] == year].copy()
     
@@ -52,12 +58,12 @@ def load_and_prepare_data(year):
     df['log_generation'] = np.log1p(gen)
     df['log_co2'] = np.log1p(co2)
     
-    print(f"Loaded {len(df):,} plants")
+    logger.info(f"Loaded {len(df):,} plants")
     return df
 
 def find_optimal_k(X_scaled, k_range=range(2, 11)):
     """Find optimal number of clusters"""
-    print("\nFinding optimal K...")
+    logger.info("\nFinding optimal K...")
     
     results = []
     for k in k_range:
@@ -73,27 +79,27 @@ def find_optimal_k(X_scaled, k_range=range(2, 11)):
             'calinski': calinski,
             'inertia': kmeans.inertia_
         })
-        print(f"  K={k}: Silhouette={silhouette:.3f}, Calinski={calinski:.1f}")
+        logger.info(f"  K={k}: Silhouette={silhouette:.3f}, Calinski={calinski:.1f}")
     
     return pd.DataFrame(results)
 
 def train_kmeans(X_scaled, n_clusters):
     """Train K-Means clustering"""
-    print(f"\n[1/3] Training K-Means (K={n_clusters})...")
+    logger.info(f"\n[1/3] Training K-Means (K={n_clusters})...")
     
     model = KMeans(n_clusters=n_clusters, random_state=RANDOM_STATE, n_init=20)
     labels = model.fit_predict(X_scaled)
     
     silhouette = silhouette_score(X_scaled, labels)
     
-    print(f"  Silhouette Score: {silhouette:.3f}")
-    print(f"  Cluster sizes: {pd.Series(labels).value_counts().sort_index().tolist()}")
+    logger.info(f"  Silhouette Score: {silhouette:.3f}")
+    logger.info(f"  Cluster sizes: {pd.Series(labels).value_counts().sort_index().tolist()}")
     
     return model, labels
 
 def train_gmm(X_scaled, n_components):
     """Train Gaussian Mixture Model"""
-    print(f"\n[2/3] Training GMM (K={n_components})...")
+    logger.info(f"\n[2/3] Training GMM (K={n_components})...")
     
     model = GaussianMixture(
         n_components=n_components,
@@ -109,15 +115,15 @@ def train_gmm(X_scaled, n_components):
     
     uncertain = (max_probas < 0.7).sum()
     
-    print(f"  BIC: {model.bic(X_scaled):.1f}")
-    print(f"  Uncertain assignments (prob < 0.7): {uncertain:,} ({uncertain/len(X_scaled)*100:.1f}%)")
-    print(f"  Cluster sizes: {pd.Series(labels).value_counts().sort_index().tolist()}")
+    logger.info(f"  BIC: {model.bic(X_scaled):.1f}")
+    logger.info(f"  Uncertain assignments (prob < 0.7): {uncertain:,} ({uncertain/len(X_scaled)*100:.1f}%)")
+    logger.info(f"  Cluster sizes: {pd.Series(labels).value_counts().sort_index().tolist()}")
     
     return model, labels, max_probas
 
 def train_hdbscan(X_scaled, min_cluster_size=50):
     """Train HDBSCAN"""
-    print(f"\n[3/3] Training HDBSCAN (min_size={min_cluster_size})...")
+    logger.info(f"\n[3/3] Training HDBSCAN (min_size={min_cluster_size})...")
     
     model = hdbscan.HDBSCAN(
         min_cluster_size=min_cluster_size,
@@ -130,18 +136,18 @@ def train_hdbscan(X_scaled, min_cluster_size=50):
     n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
     n_noise = (labels == -1).sum()
     
-    print(f"  Found {n_clusters} natural clusters")
-    print(f"  Noise/outliers: {n_noise:,} ({n_noise/len(labels)*100:.1f}%)")
+    logger.info(f"  Found {n_clusters} natural clusters")
+    logger.info(f"  Noise/outliers: {n_noise:,} ({n_noise/len(labels)*100:.1f}%)")
     if n_clusters > 0:
         valid_labels = labels[labels != -1]
-        print(f"  Cluster sizes: {pd.Series(valid_labels).value_counts().sort_index().tolist()}")
+        logger.info(f"  Cluster sizes: {pd.Series(valid_labels).value_counts().sort_index().tolist()}")
     
     return model, labels
 
 def profile_clusters(df, labels, n_clusters, method_name='K-Means'):
     """Generate cluster profiles"""
-    print(f"\n{method_name} CLUSTER PROFILES")
-    print("=" * 80)
+    logger.info(f"\n{method_name} CLUSTER PROFILES")
+    logger.info("=" * 80)
     
     df_labeled = df.copy()
     df_labeled['cluster'] = labels
@@ -168,13 +174,13 @@ def profile_clusters(df, labels, n_clusters, method_name='K-Means'):
         profiles.append(profile)
     
     profile_df = pd.DataFrame(profiles)
-    print(profile_df.to_string(index=False))
+    logger.info(profile_df.to_string(index=False))
     
     return profile_df
 
 def visualize_results(df, kmeans_labels, gmm_labels, hdbscan_labels, X_scaled, features):
     """Create comprehensive visualization"""
-    print("\nGenerating visualizations...")
+    logger.info("\nGenerating visualizations...")
     
     # PCA for visualization
     pca = PCA(n_components=2, random_state=RANDOM_STATE)
@@ -284,7 +290,7 @@ def visualize_results(df, kmeans_labels, gmm_labels, hdbscan_labels, X_scaled, f
                 fontsize=16, fontweight='bold', y=0.995)
     
     plt.savefig('03_clustering_results.png', dpi=300, bbox_inches='tight')
-    print("  Saved: 03_clustering_results.png")
+    logger.info("  Saved: 03_clustering_results.png")
 
 def export_clusters(df, labels, output_path='plant_clusters.csv'):
     """Export cluster assignments"""
@@ -296,13 +302,13 @@ def export_clusters(df, labels, output_path='plant_clusters.csv'):
     export_cols = [c for c in export_cols if c in df_export.columns]
     
     df_export[export_cols].to_csv(output_path, index=False)
-    print(f"\nExported cluster assignments to: {output_path}")
+    logger.info(f"\nExported cluster assignments to: {output_path}")
 
 def main():
     """Main execution"""
-    print("=" * 80)
-    print("CLUSTERING ANALYSIS - PRODUCTION RUN")
-    print("=" * 80)
+    logger.info("=" * 80)
+    logger.info("CLUSTERING ANALYSIS - PRODUCTION RUN")
+    logger.info("=" * 80)
     
     # Load data
     df = load_and_prepare_data(TARGET_YEAR)
@@ -314,7 +320,7 @@ def main():
     X = df[features].dropna()
     df_clean = df.loc[X.index].copy()
     
-    print(f"\nClustering {len(X):,} plants")
+    logger.info(f"\nClustering {len(X):,} plants")
     
     # Standardize
     scaler = StandardScaler()
@@ -341,9 +347,9 @@ def main():
     # Export
     export_clusters(df_clean, kmeans_labels)
     
-    print("\n" + "=" * 80)
-    print("✓ Complete!")
-    print("=" * 80)
+    logger.info("\n" + "=" * 80)
+    logger.info("✓ Complete!")
+    logger.info("=" * 80)
     
     return {
         'data': df_clean,

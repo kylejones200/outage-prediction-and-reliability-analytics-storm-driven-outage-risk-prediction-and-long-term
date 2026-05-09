@@ -1,6 +1,12 @@
 import sys
 import os
 
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 # Add parent directory to path to import plot_style
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from plot_style import set_tufte_defaults, apply_tufte_style, save_tufte_figure, COLORS
@@ -172,7 +178,7 @@ def generate_outage_architecture():
     
     plt.tight_layout()
     plt.savefig('03_outage_analysis_architecture.png', bbox_inches='tight', dpi=300)
-    print("✓ Generated: 03_outage_analysis_architecture.png")
+    logger.info("✓ Generated: 03_outage_analysis_architecture.png")
     plt.close()
 
 
@@ -315,7 +321,7 @@ def generate_outage_dashboard():
                 fontsize=14, weight='bold', y=0.995)
     
     plt.savefig('03_outage_analysis_dashboard.png', bbox_inches='tight', dpi=300)
-    print("✓ Generated: 03_outage_analysis_dashboard.png")
+    logger.info("✓ Generated: 03_outage_analysis_dashboard.png")
     plt.close()
 
 
@@ -391,19 +397,19 @@ def generate_temporal_patterns():
                 fontsize=14, weight='bold')
     
     plt.savefig('03_outage_temporal_patterns.png', bbox_inches='tight', dpi=300)
-    print("✓ Generated: 03_outage_temporal_patterns.png")
+    logger.info("✓ Generated: 03_outage_temporal_patterns.png")
     plt.close()
 
 
 if __name__ == "__main__":
-    print("Generating visualizations for Outage Detection & Analysis Blog...\n")
+    logger.info("Generating visualizations for Outage Detection & Analysis Blog...\n")
     
     generate_outage_architecture()
     generate_outage_dashboard()
     generate_temporal_patterns()
     
-    print("\n✓ All visualizations generated successfully!")
-    print("  - 03_outage_analysis_architecture.png")
-    print("  - 03_outage_analysis_dashboard.png")
-    print("  - 03_outage_temporal_patterns.png")
+    logger.info("\n✓ All visualizations generated successfully!")
+    logger.info("  - 03_outage_analysis_architecture.png")
+    logger.info("  - 03_outage_analysis_dashboard.png")
+    logger.info("  - 03_outage_temporal_patterns.png")
 
