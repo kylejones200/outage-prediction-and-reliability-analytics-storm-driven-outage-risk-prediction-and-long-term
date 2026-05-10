@@ -178,7 +178,7 @@ def profile_clusters(df, labels, n_clusters, method_name='K-Means'):
     
     return profile_df
 
-def visualize_results(df, kmeans_labels, gmm_labels, hdbscan_labels, X_scaled, features):
+def visualize_results(df, kmeans_labels, gmm_labels, hdbscan_labels, X_scaled, features, plot: bool = False):
     """Create comprehensive visualization"""
     logger.info("\nGenerating visualizations...")
     
@@ -186,110 +186,111 @@ def visualize_results(df, kmeans_labels, gmm_labels, hdbscan_labels, X_scaled, f
     pca = PCA(n_components=2, random_state=RANDOM_STATE)
     X_pca = pca.fit_transform(X_scaled)
     
-    fig = plt.figure(figsize=(18, 12))
-    gs = fig.add_gridspec(3, 3, hspace=0.3, wspace=0.3)
+    if plot:
+        fig = plt.figure(figsize=(18, 12))
+        gs = fig.add_gridspec(3, 3, hspace=0.3, wspace=0.3)
     
     # Row 1: PCA projections
-    ax1 = fig.add_subplot(gs[0, 0])
-    scatter1 = ax1.scatter(X_pca[:, 0], X_pca[:, 1], c=kmeans_labels, 
-                          cmap='tab10', alpha=0.6, s=30, edgecolors='black', linewidths=0.3)
-    ax1.set_xlabel(f'PC1 ({pca.explained_variance_ratio_[0]*100:.1f}%)', fontweight='bold')
-    ax1.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]*100:.1f}%)', fontweight='bold')
-    ax1.set_title('K-Means Clustering', fontsize=12, fontweight='bold')
-    plt.colorbar(scatter1, ax=ax1, label='Cluster')
-    ax2 = fig.add_subplot(gs[0, 1])
-    scatter2 = ax2.scatter(X_pca[:, 0], X_pca[:, 1], c=gmm_labels, 
-                          cmap='tab10', alpha=0.6, s=30, edgecolors='black', linewidths=0.3)
-    ax2.set_xlabel(f'PC1 ({pca.explained_variance_ratio_[0]*100:.1f}%)', fontweight='bold')
-    ax2.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]*100:.1f}%)', fontweight='bold')
-    ax2.set_title('GMM Clustering', fontsize=12, fontweight='bold')
-    plt.colorbar(scatter2, ax=ax2, label='Cluster')
-    ax3 = fig.add_subplot(gs[0, 2])
+        ax1 = fig.add_subplot(gs[0, 0])
+        scatter1 = ax1.scatter(X_pca[:, 0], X_pca[:, 1], c=kmeans_labels, 
+                              cmap='tab10', alpha=0.6, s=30, edgecolors='black', linewidths=0.3)
+        ax1.set_xlabel(f'PC1 ({pca.explained_variance_ratio_[0]*100:.1f}%)', fontweight='bold')
+        ax1.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]*100:.1f}%)', fontweight='bold')
+        ax1.set_title('K-Means Clustering', fontsize=12, fontweight='bold')
+        plt.colorbar(scatter1, ax=ax1, label='Cluster')
+        ax2 = fig.add_subplot(gs[0, 1])
+        scatter2 = ax2.scatter(X_pca[:, 0], X_pca[:, 1], c=gmm_labels, 
+                              cmap='tab10', alpha=0.6, s=30, edgecolors='black', linewidths=0.3)
+        ax2.set_xlabel(f'PC1 ({pca.explained_variance_ratio_[0]*100:.1f}%)', fontweight='bold')
+        ax2.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]*100:.1f}%)', fontweight='bold')
+        ax2.set_title('GMM Clustering', fontsize=12, fontweight='bold')
+        plt.colorbar(scatter2, ax=ax2, label='Cluster')
+        ax3 = fig.add_subplot(gs[0, 2])
     # For HDBSCAN, use -1 for noise
-    scatter3 = ax3.scatter(X_pca[:, 0], X_pca[:, 1], c=hdbscan_labels, 
-                          cmap='tab10', alpha=0.6, s=30, edgecolors='black', linewidths=0.3)
-    ax3.set_xlabel(f'PC1 ({pca.explained_variance_ratio_[0]*100:.1f}%)', fontweight='bold')
-    ax3.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]*100:.1f}%)', fontweight='bold')
-    ax3.set_title('HDBSCAN Clustering', fontsize=12, fontweight='bold')
-    plt.colorbar(scatter3, ax=ax3, label='Cluster')
+        scatter3 = ax3.scatter(X_pca[:, 0], X_pca[:, 1], c=hdbscan_labels, 
+                              cmap='tab10', alpha=0.6, s=30, edgecolors='black', linewidths=0.3)
+        ax3.set_xlabel(f'PC1 ({pca.explained_variance_ratio_[0]*100:.1f}%)', fontweight='bold')
+        ax3.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]*100:.1f}%)', fontweight='bold')
+        ax3.set_title('HDBSCAN Clustering', fontsize=12, fontweight='bold')
+        plt.colorbar(scatter3, ax=ax3, label='Cluster')
     # Row 2: Feature space views
-    ax4 = fig.add_subplot(gs[1, 0])
-    ax4.scatter(df['log_generation'], df['carbon_intensity'], 
-               c=kmeans_labels, cmap='tab10', alpha=0.6, s=30, edgecolors='none')
-    ax4.set_xlabel('Log Generation', fontweight='bold')
-    ax4.set_ylabel('Carbon Intensity', fontweight='bold')
-    ax4.set_title('Generation vs Carbon (K-Means)', fontsize=12, fontweight='bold')
-    ax5 = fig.add_subplot(gs[1, 1])
-    ax5.scatter(df['capacity_factor'], df['carbon_intensity'], 
-               c=kmeans_labels, cmap='tab10', alpha=0.6, s=30, edgecolors='none')
-    ax5.set_xlabel('Capacity Factor', fontweight='bold')
-    ax5.set_ylabel('Carbon Intensity', fontweight='bold')
-    ax5.set_title('Efficiency vs Carbon (K-Means)', fontsize=12, fontweight='bold')
+        ax4 = fig.add_subplot(gs[1, 0])
+        ax4.scatter(df['log_generation'], df['carbon_intensity'], 
+                   c=kmeans_labels, cmap='tab10', alpha=0.6, s=30, edgecolors='none')
+        ax4.set_xlabel('Log Generation', fontweight='bold')
+        ax4.set_ylabel('Carbon Intensity', fontweight='bold')
+        ax4.set_title('Generation vs Carbon (K-Means)', fontsize=12, fontweight='bold')
+        ax5 = fig.add_subplot(gs[1, 1])
+        ax5.scatter(df['capacity_factor'], df['carbon_intensity'], 
+                   c=kmeans_labels, cmap='tab10', alpha=0.6, s=30, edgecolors='none')
+        ax5.set_xlabel('Capacity Factor', fontweight='bold')
+        ax5.set_ylabel('Carbon Intensity', fontweight='bold')
+        ax5.set_title('Efficiency vs Carbon (K-Means)', fontsize=12, fontweight='bold')
     # Cluster size comparison
-    ax6 = fig.add_subplot(gs[1, 2])
-    kmeans_counts = pd.Series(kmeans_labels).value_counts().sort_index()
-    gmm_counts = pd.Series(gmm_labels).value_counts().sort_index()
+        ax6 = fig.add_subplot(gs[1, 2])
+        kmeans_counts = pd.Series(kmeans_labels).value_counts().sort_index()
+        gmm_counts = pd.Series(gmm_labels).value_counts().sort_index()
     
-    x = np.arange(len(kmeans_counts))
-    width = 0.35
+        x = np.arange(len(kmeans_counts))
+        width = 0.35
     
-    ax6.bar(x - width/2, kmeans_counts.values, width, label='K-Means', 
-           color='#3498db', alpha=0.8, edgecolor='black')
-    ax6.bar(x + width/2, gmm_counts.values, width, label='GMM', 
-           color='#e74c3c', alpha=0.8, edgecolor='black')
+        ax6.bar(x - width/2, kmeans_counts.values, width, label='K-Means', 
+               color='#3498db', alpha=0.8, edgecolor='black')
+        ax6.bar(x + width/2, gmm_counts.values, width, label='GMM', 
+               color='#e74c3c', alpha=0.8, edgecolor='black')
     
-    ax6.set_xlabel('Cluster ID', fontweight='bold')
-    ax6.set_ylabel('Number of Plants', fontweight='bold')
-    ax6.set_title('Cluster Sizes', fontsize=12, fontweight='bold')
-    ax6.set_xticks(x)
-    ax6.set_xticklabels(kmeans_counts.index)
-    ax6.legend()
+        ax6.set_xlabel('Cluster ID', fontweight='bold')
+        ax6.set_ylabel('Number of Plants', fontweight='bold')
+        ax6.set_title('Cluster Sizes', fontsize=12, fontweight='bold')
+        ax6.set_xticks(x)
+        ax6.set_xticklabels(kmeans_counts.index)
+        ax6.legend()
     # Row 3: Cluster profiles
-    ax7 = fig.add_subplot(gs[2, :])
+        ax7 = fig.add_subplot(gs[2, :])
     
     # Compute cluster profiles
-    df_temp = df.copy()
-    df_temp['cluster'] = kmeans_labels
+        df_temp = df.copy()
+        df_temp['cluster'] = kmeans_labels
     
-    profiles = []
-    for i in sorted(df_temp['cluster'].unique()):
-        cluster_data = df_temp[df_temp['cluster'] == i]
-        profiles.append({
-            'Cluster': f'C{i}',
-            'Size': len(cluster_data),
-            'Carbon\nIntensity': cluster_data['carbon_intensity'].median(),
-            'Capacity\nFactor': cluster_data['capacity_factor'].median(),
-            'Generation\n(log)': cluster_data['log_generation'].median()
-        })
+        profiles = []
+        for i in sorted(df_temp['cluster'].unique()):
+            cluster_data = df_temp[df_temp['cluster'] == i]
+            profiles.append({
+                'Cluster': f'C{i}',
+                'Size': len(cluster_data),
+                'Carbon\nIntensity': cluster_data['carbon_intensity'].median(),
+                'Capacity\nFactor': cluster_data['capacity_factor'].median(),
+                'Generation\n(log)': cluster_data['log_generation'].median()
+            })
     
-    profile_df = pd.DataFrame(profiles)
+        profile_df = pd.DataFrame(profiles)
     
     # Normalize for visualization
-    x_pos = np.arange(len(profile_df))
-    width = 0.25
+        x_pos = np.arange(len(profile_df))
+        width = 0.25
     
-    norm_carbon = profile_df['Carbon\nIntensity'] / profile_df['Carbon\nIntensity'].max()
-    norm_cap = profile_df['Capacity\nFactor'] / profile_df['Capacity\nFactor'].max()
-    norm_gen = profile_df['Generation\n(log)'] / profile_df['Generation\n(log)'].max()
+        norm_carbon = profile_df['Carbon\nIntensity'] / profile_df['Carbon\nIntensity'].max()
+        norm_cap = profile_df['Capacity\nFactor'] / profile_df['Capacity\nFactor'].max()
+        norm_gen = profile_df['Generation\n(log)'] / profile_df['Generation\n(log)'].max()
     
-    ax7.bar(x_pos - width, norm_carbon, width, label='Carbon Intensity', 
-           color='#e74c3c', alpha=0.8, edgecolor='black')
-    ax7.bar(x_pos, norm_cap, width, label='Capacity Factor', 
-           color='#3498db', alpha=0.8, edgecolor='black')
-    ax7.bar(x_pos + width, norm_gen, width, label='Generation', 
-           color='#2ecc71', alpha=0.8, edgecolor='black')
+        ax7.bar(x_pos - width, norm_carbon, width, label='Carbon Intensity', 
+               color='#e74c3c', alpha=0.8, edgecolor='black')
+        ax7.bar(x_pos, norm_cap, width, label='Capacity Factor', 
+               color='#3498db', alpha=0.8, edgecolor='black')
+        ax7.bar(x_pos + width, norm_gen, width, label='Generation', 
+               color='#2ecc71', alpha=0.8, edgecolor='black')
     
-    ax7.set_xlabel('Cluster', fontweight='bold', fontsize=12)
-    ax7.set_ylabel('Normalized Value', fontweight='bold', fontsize=12)
-    ax7.set_title('K-Means Cluster Profiles (Normalized)', fontsize=13, fontweight='bold')
-    ax7.set_xticks(x_pos)
-    ax7.set_xticklabels([f"{row['Cluster']}\n(n={row['Size']:,})" 
-                         for _, row in profile_df.iterrows()])
-    ax7.legend(fontsize=10)
-    plt.suptitle(f'Clustering Analysis - {len(df):,} Power Plants ({TARGET_YEAR})',
-                fontsize=16, fontweight='bold', y=0.995)
+        ax7.set_xlabel('Cluster', fontweight='bold', fontsize=12)
+        ax7.set_ylabel('Normalized Value', fontweight='bold', fontsize=12)
+        ax7.set_title('K-Means Cluster Profiles (Normalized)', fontsize=13, fontweight='bold')
+        ax7.set_xticks(x_pos)
+        ax7.set_xticklabels([f"{row['Cluster']}\n(n={row['Size']:,})" 
+                             for _, row in profile_df.iterrows()])
+        ax7.legend(fontsize=10)
+        plt.suptitle(f'Clustering Analysis - {len(df):,} Power Plants ({TARGET_YEAR})',
+                    fontsize=16, fontweight='bold', y=0.995)
     
-    plt.savefig('03_clustering_results.png', dpi=300, bbox_inches='tight')
+        plt.savefig('03_clustering_results.png', dpi=300, bbox_inches='tight')
     logger.info("  Saved: 03_clustering_results.png")
 
 def export_clusters(df, labels, output_path='plant_clusters.csv'):
