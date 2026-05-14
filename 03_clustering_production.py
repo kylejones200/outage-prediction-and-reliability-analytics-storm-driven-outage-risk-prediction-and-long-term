@@ -162,7 +162,7 @@ def profile_clusters(df, labels, n_clusters, method_name='K-Means'):
             'Med_CapFactor': cluster_data['capacity_factor'].median(),
             'Med_Generation': cluster_data['log_generation'].median()
         }
-        profiles.append(profile)
+        pd.concat([profiles, profile])
     
     profile_df = pd.DataFrame(profiles)
     logger.info(profile_df.to_string(index=False))
