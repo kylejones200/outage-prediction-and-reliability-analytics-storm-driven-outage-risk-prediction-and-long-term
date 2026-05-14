@@ -147,7 +147,6 @@ def train_hdbscan(X_scaled, min_cluster_size=50):
 def profile_clusters(df, labels, n_clusters, method_name='K-Means'):
     """Generate cluster profiles"""
     logger.info(f"\n{method_name} CLUSTER PROFILES")
-    logger.info("=" * 80)
     
     df_labeled = df.copy()
     df_labeled['cluster'] = labels
@@ -307,9 +306,7 @@ def export_clusters(df, labels, output_path='plant_clusters.csv'):
 
 def main():
     """Main execution"""
-    logger.info("=" * 80)
     logger.info("CLUSTERING ANALYSIS - PRODUCTION RUN")
-    logger.info("=" * 80)
     
     # Load data
     df = load_and_prepare_data(TARGET_YEAR)
@@ -348,9 +345,7 @@ def main():
     # Export
     export_clusters(df_clean, kmeans_labels)
     
-    logger.info("\n" + "=" * 80)
-    logger.info("✓ Complete!")
-    logger.info("=" * 80)
+    logger.info("=== ✓ Complete! ===")
     
     return {
         'data': df_clean,
