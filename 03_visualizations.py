@@ -7,9 +7,6 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-# Add parent directory to path to import plot_style
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from plot_style import set_tufte_defaults, apply_tufte_style, save_tufte_figure, COLORS
 
 """
 Visualization script for Outage Detection and Analysis Blog
@@ -24,20 +21,8 @@ from matplotlib.patches import Rectangle, FancyBboxPatch, Circle
 from datetime import datetime, timedelta
 
 
-# Add parent directory to path to import plot_style
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Import Tufte plotting utilities
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-from tda_utils import setup_tufte_plot, TufteColors
-
-
-
-
-
-
-
 def generate_outage_architecture(plot: bool = False):
     """Generate outage analysis system architecture diagram."""
     if plot:
@@ -48,7 +33,7 @@ def generate_outage_architecture(plot: bool = False):
         y_source = 8
         source_box = FancyBboxPatch((1.5, y_source), 3, 1.2, 
                                    boxstyle="round,pad=0.1", 
-                                   facecolor=COLORS['black'], 
+                                   facecolor="#2b2b2b", 
                                    edgecolor='black', linewidth=2)
         ax.add_patch(source_box)
         ax.text(3, y_source + 0.6, 'EAGLE-I Dataset\nOak Ridge National Lab\n15-min Updates', 
@@ -57,9 +42,9 @@ def generate_outage_architecture(plot: bool = False):
     # Data processing layer
         y_processing = 6.5
         processing_items = [
-            {'name': 'Parquet\nArchives', 'x': 0.5, 'color': COLORS['darkgray']},
-            {'name': 'Real-Time\nIngestion', 'x': 2.5, 'color': COLORS['darkgray']},
-            {'name': 'County\nMapping', 'x': 4.5, 'color': COLORS['darkgray']}
+            {'name': 'Parquet\nArchives', 'x': 0.5, 'color': "#696969"},
+            {'name': 'Real-Time\nIngestion', 'x': 2.5, 'color': "#696969"},
+            {'name': 'County\nMapping', 'x': 4.5, 'color': "#696969"}
         ]
     
         for item in processing_items:
@@ -75,7 +60,7 @@ def generate_outage_architecture(plot: bool = False):
         y_service = 5
         service_box = FancyBboxPatch((0.5, y_service), 5.5, 1, 
                                     boxstyle="round,pad=0.1",
-                                    facecolor=COLORS['gray'], 
+                                    facecolor="#a0a0a0", 
                                     edgecolor='black', linewidth=2, alpha=0.9)
         ax.add_patch(service_box)
         ax.text(3.25, y_service + 0.5, 'EagleiOutageService\nQuery • Filter • Temporal Analysis • Aggregation', 
@@ -84,10 +69,10 @@ def generate_outage_architecture(plot: bool = False):
     # Analysis modules
         y_analysis = 3.5
         modules = [
-            {'name': 'Event\nDetection', 'x': 0.5, 'color': COLORS['darkgray']},
-            {'name': 'Severity\nClassification', 'x': 2, 'color': COLORS['darkgray']},
-            {'name': 'Temporal\nPatterns', 'x': 3.5, 'color': COLORS['darkgray']},
-            {'name': 'Load\nImpact', 'x': 5, 'color': COLORS['darkgray']}
+            {'name': 'Event\nDetection', 'x': 0.5, 'color': "#696969"},
+            {'name': 'Severity\nClassification', 'x': 2, 'color': "#696969"},
+            {'name': 'Temporal\nPatterns', 'x': 3.5, 'color': "#696969"},
+            {'name': 'Load\nImpact', 'x': 5, 'color': "#696969"}
         ]
     
         for module in modules:
@@ -103,7 +88,7 @@ def generate_outage_architecture(plot: bool = False):
         y_alert = 2
         alert_box = FancyBboxPatch((1, y_alert), 4.5, 1, 
                                   boxstyle="round,pad=0.1",
-                                  facecolor=COLORS['gray'], 
+                                  facecolor="#a0a0a0", 
                                   edgecolor='black', linewidth=2, alpha=0.9)
         ax.add_patch(alert_box)
         ax.text(3.25, y_alert + 0.5, 'Alert & Response System\nThreshold Monitoring • Notifications • Dashboards', 
@@ -121,7 +106,7 @@ def generate_outage_architecture(plot: bool = False):
         for output in outputs:
             box = FancyBboxPatch((output['x'], y_output), 1.3, 0.6, 
                                 boxstyle="round,pad=0.05",
-                                facecolor=COLORS['black'], 
+                                facecolor="#2b2b2b", 
                                 edgecolor='black', linewidth=1.5, alpha=0.7)
             ax.add_patch(box)
             ax.text(output['x'] + 0.65, y_output + 0.3, output['name'], 
@@ -131,7 +116,7 @@ def generate_outage_architecture(plot: bool = False):
         y_integration = 2
         integration_box = FancyBboxPatch((7, y_integration), 3, 6, 
                                         boxstyle="round,pad=0.15",
-                                        facecolor=COLORS['gray'], 
+                                        facecolor="#a0a0a0", 
                                         edgecolor='black', linewidth=2, alpha=0.3)
         ax.add_patch(integration_box)
         ax.text(8.5, 7.5, 'System Integration', ha='center', fontsize=11, weight='bold')
@@ -149,7 +134,7 @@ def generate_outage_architecture(plot: bool = False):
             box = FancyBboxPatch((7.3, item['y']), 2.4, 0.5, 
                                 boxstyle="round,pad=0.05",
                                 facecolor='white', 
-                                edgecolor=COLORS['gray'], linewidth=1.5)
+                                edgecolor="#a0a0a0", linewidth=1.5)
             ax.add_patch(box)
             ax.text(8.5, item['y'] + 0.25, item['name'], 
                    ha='center', va='center', fontsize=8)
@@ -165,7 +150,7 @@ def generate_outage_architecture(plot: bool = False):
     # Integration arrows
         for y_pos in [6.8, 5.4, 4]:
             ax.arrow(6.9, y_pos + 0.25, -0.5, 0, head_width=0.15, head_length=0.1, 
-                    fc=COLORS['gray'], ec=COLORS['gray'], linewidth=1.5, alpha=0.6)
+                    fc="#a0a0a0", ec="#a0a0a0", linewidth=1.5, alpha=0.6)
     
         ax.set_xlim(-0.5, 10.5)
         ax.set_ylim(-0.5, 9.5)
@@ -193,12 +178,12 @@ def generate_outage_dashboard(plot: bool = False):
         events_significant = [12, 10, 15, 14, 18, 20, 25, 28, 22, 18, 15, 12]
     
         ax1.bar(dates, events_critical, width=20, label='Critical (500k+ customers)', 
-               color=COLORS['black'], edgecolor='black', linewidth=1)
+               color="#2b2b2b", edgecolor='black', linewidth=1)
         ax1.bar(dates, events_major, width=20, bottom=events_critical, 
-               label='Major (100k-500k)', color=COLORS['darkgray'], edgecolor='black', linewidth=1)
+               label='Major (100k-500k)', color="#696969", edgecolor='black', linewidth=1)
         ax1.bar(dates, events_significant, width=20, 
                bottom=np.array(events_critical)+np.array(events_major),
-               label='Significant (10k-100k)', color=COLORS['gray'], edgecolor='black', linewidth=1)
+               label='Significant (10k-100k)', color="#a0a0a0", edgecolor='black', linewidth=1)
     
         ax1.set_xlabel('Month (2024)', fontsize=11, weight='bold')
         ax1.set_ylabel('Number of Events', fontsize=11, weight='bold')
@@ -218,21 +203,21 @@ def generate_outage_dashboard(plot: bool = False):
         ax2_1 = ax2
         bars1 = ax2_1.bar(x - width/2, [c/1000000 for c in total_customers_out], width, 
                          label='Total Customers Out (Millions)', 
-                         color=COLORS['black'], edgecolor='black', linewidth=1)
+                         color="#2b2b2b", edgecolor='black', linewidth=1)
     
         ax2_2 = ax2.twinx()
         bars2 = ax2_2.bar(x + width/2, avg_outage_rate, width, 
                          label='Avg Outage Rate (%)', 
-                         color=COLORS['gray'], edgecolor='black', linewidth=1)
+                         color="#a0a0a0", edgecolor='black', linewidth=1)
     
         ax2_1.set_xlabel('State', fontsize=11, weight='bold')
-        ax2_1.set_ylabel('Total Customers Out (Millions)', fontsize=10, color=COLORS['black'])
-        ax2_2.set_ylabel('Avg Outage Rate (%)', fontsize=10, color=COLORS['gray'])
+        ax2_1.set_ylabel('Total Customers Out (Millions)', fontsize=10, color="#2b2b2b")
+        ax2_2.set_ylabel('Avg Outage Rate (%)', fontsize=10, color="#a0a0a0")
         ax2_1.set_title('State Outage Summary (2024)', fontsize=12, weight='bold')
         ax2_1.set_xticks(x)
         ax2_1.set_xticklabels(states, rotation=45, ha='right')
-        ax2_1.tick_params(axis='y', labelcolor=COLORS['black'])
-        ax2_2.tick_params(axis='y', labelcolor=COLORS['gray'])
+        ax2_1.tick_params(axis='y', labelcolor="#2b2b2b")
+        ax2_2.tick_params(axis='y', labelcolor="#a0a0a0")
         ax2_1.grid(False)
     
     # Legend combining both axes
@@ -244,7 +229,7 @@ def generate_outage_dashboard(plot: bool = False):
         ax3 = fig.add_subplot(gs[1, 2])
         severity_labels = ['Critical', 'Major', 'Significant', 'Minor']
         severity_counts = [28, 67, 209, 896]
-        colors_severity = [COLORS['black'], COLORS['darkgray'], COLORS['gray'], COLORS['lightgray']]
+        colors_severity = ["#2b2b2b", "#696969", "#a0a0a0", "#d3d3d3"]
     
         wedges, texts, autotexts = ax3.pie(severity_counts, labels=severity_labels, 
                                            autopct='%1.1f%%', colors=colors_severity,
@@ -263,10 +248,10 @@ def generate_outage_dashboard(plot: bool = False):
             3200, 3500, 3200, 2800, 2200, 1900, 1600, 1400
         ]
     
-        ax4.plot(hours, avg_customers_out, linewidth=2.5, color=COLORS['black'], 
+        ax4.plot(hours, avg_customers_out, linewidth=2.5, color="#2b2b2b", 
                 marker='o', markersize=4, label='Avg Customers Out')
-        ax4.fill_between(hours, avg_customers_out, alpha=0.3, color=COLORS['black'])
-        ax4.axvline(x=17, color=COLORS['black'], linestyle='--', linewidth=2, 
+        ax4.fill_between(hours, avg_customers_out, alpha=0.3, color="#2b2b2b")
+        ax4.axvline(x=17, color="#2b2b2b", linestyle='--', linewidth=2, 
                     label='Peak Hour (17:00)')
         ax4.set_xlabel('Hour of Day', fontsize=10, weight='bold')
         ax4.set_ylabel('Avg Customers Out (1000s)', fontsize=10, weight='bold')
@@ -279,8 +264,8 @@ def generate_outage_dashboard(plot: bool = False):
         months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
                   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         total_events = [125, 98, 142, 156, 188, 205, 268, 295, 234, 186, 145, 128]
-        colors_months = [COLORS['gray'] if e < 200 else COLORS['gray'] 
-                         if e < 250 else COLORS['black'] for e in total_events]
+        colors_months = ["#a0a0a0" if e < 200 else "#a0a0a0" 
+                         if e < 250 else "#2b2b2b" for e in total_events]
     
         bars = ax5.bar(range(12), total_events, color=colors_months, 
                        edgecolor='black', linewidth=1.5)
@@ -288,7 +273,7 @@ def generate_outage_dashboard(plot: bool = False):
         ax5.set_title('Monthly Event Count', fontsize=11, weight='bold')
         ax5.set_xticks(range(12))
         ax5.set_xticklabels(months, rotation=45, ha='right')
-        ax5.axhline(y=200, color=COLORS['black'], linestyle='--', linewidth=1.5, 
+        ax5.axhline(y=200, color="#2b2b2b", linestyle='--', linewidth=1.5, 
                     alpha=0.7, label='High Activity Threshold')
         ax5.legend(fontsize=8)
     
@@ -300,11 +285,11 @@ def generate_outage_dashboard(plot: bool = False):
     # Simulate outage event from hour 10-16
         observed_load[10:16] *= 0.75  # 25% load drop during outage
     
-        ax6.plot(time_points, forecast_load, linewidth=2, color=COLORS['black'], 
+        ax6.plot(time_points, forecast_load, linewidth=2, color="#2b2b2b", 
                 label='Forecast Load', linestyle='--')
-        ax6.plot(time_points, observed_load, linewidth=2, color=COLORS['black'], 
+        ax6.plot(time_points, observed_load, linewidth=2, color="#2b2b2b", 
                 label='Observed Load')
-        ax6.axvspan(10, 16, alpha=0.3, color=COLORS['black'], label='Outage Period')
+        ax6.axvspan(10, 16, alpha=0.3, color="#2b2b2b", label='Outage Period')
         ax6.set_xlabel('Hour', fontsize=10, weight='bold')
         ax6.set_ylabel('Load (MW)', fontsize=10, weight='bold')
         ax6.set_title('Load Impact Analysis', fontsize=11, weight='bold')
@@ -336,17 +321,17 @@ def generate_temporal_patterns(plot: bool = False):
         upper_bound = avg_outages * 1.5
         lower_bound = avg_outages * 0.5
     
-        ax1.plot(hours, avg_outages, linewidth=3, color=COLORS['black'], 
+        ax1.plot(hours, avg_outages, linewidth=3, color="#2b2b2b", 
                 label='Average Customers Out', marker='o', markersize=6)
         ax1.fill_between(hours, lower_bound, upper_bound, alpha=0.2, 
-                        color=COLORS['black'], label='Confidence Interval')
+                        color="#2b2b2b", label='Confidence Interval')
     
     # Highlight peak hours
         peak_start = 14
         peak_end = 19
-        ax1.axvspan(peak_start, peak_end, alpha=0.2, color=COLORS['black'])
+        ax1.axvspan(peak_start, peak_end, alpha=0.2, color="#2b2b2b")
         ax1.text(16.5, max(upper_bound) * 0.9, 'Peak\nVulnerability\nWindow', 
-                ha='center', fontsize=10, weight='bold', color=COLORS['black'])
+                ha='center', fontsize=10, weight='bold', color="#2b2b2b")
     
         ax1.set_xlabel('Hour of Day', fontsize=11, weight='bold')
         ax1.set_ylabel('Average Customers Out (1000s)', fontsize=11, weight='bold')
@@ -359,8 +344,8 @@ def generate_temporal_patterns(plot: bool = False):
         ax2 = fig.add_subplot(gs[1, 0])
         dow_labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         dow_events = [145, 152, 148, 156, 168, 195, 186]
-        dow_colors = [COLORS['darkgray'] if e < 160 else COLORS['gray'] 
-                      if e < 180 else COLORS['black'] for e in dow_events]
+        dow_colors = ["#696969" if e < 160 else "#a0a0a0" 
+                      if e < 180 else "#2b2b2b" for e in dow_events]
     
         bars = ax2.bar(range(7), dow_events, color=dow_colors, 
                        edgecolor='black', linewidth=1.5)
@@ -377,14 +362,14 @@ def generate_temporal_patterns(plot: bool = False):
         months = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
         customer_hours = [2.8, 2.2, 3.1, 3.4, 4.2, 4.8, 6.2, 6.8, 5.4, 4.1, 3.2, 2.9]
     
-        ax3.plot(range(12), customer_hours, linewidth=3, color=COLORS['black'], 
+        ax3.plot(range(12), customer_hours, linewidth=3, color="#2b2b2b", 
                 marker='s', markersize=8, label='Customer-Outage-Hours (Millions)')
-        ax3.fill_between(range(12), customer_hours, alpha=0.3, color=COLORS['black'])
+        ax3.fill_between(range(12), customer_hours, alpha=0.3, color="#2b2b2b")
     
     # Highlight summer peak
-        ax3.axvspan(5, 8, alpha=0.2, color=COLORS['gray'])
+        ax3.axvspan(5, 8, alpha=0.2, color="#a0a0a0")
         ax3.text(6.5, 6, 'Summer\nPeak', ha='center', fontsize=9, 
-                weight='bold', color=COLORS['black'])
+                weight='bold', color="#2b2b2b")
     
         ax3.set_xlabel('Month', fontsize=10, weight='bold')
         ax3.set_ylabel('Customer-Outage-Hours (Millions)', fontsize=10, weight='bold')
