@@ -6,7 +6,6 @@ K-Means, GMM, and HDBSCAN to identify natural plant groupings
 
 import pandas as pd
 import numpy as np
-import warnings
 from pathlib import Path
 import logging
 logging.basicConfig(
@@ -14,7 +13,6 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-warnings.filterwarnings('ignore')
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
