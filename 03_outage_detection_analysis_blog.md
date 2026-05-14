@@ -13,12 +13,12 @@ This article demonstrates how to build a working outage detection and impact ana
 EAGLE-I aggregates outage data from utilities across all 50 states, providing unprecedented visibility into grid reliability events. Unlike utility-specific outage maps that cover only their service territory, EAGLE-I offers comprehensive national coverage with county-level granularity.
 
 Key dataset characteristics:
-- **15-minute update frequency** during normal conditions (5-minute during major events)
-- **County-level spatial resolution** with FIPS code mapping
-- **Customer impact metrics**: Total customers, customers out, outage percentage
-- **Historical archives** dating back to 2014 for trend analysis
-- **Near real-time delivery** through Oak Ridge's data portal
-- **National coverage** including remote areas and small utilities
+- 15-minute update frequency during normal conditions (5-minute during major events)
+- County-level spatial resolution with FIPS code mapping
+- Customer impact metrics: Total customers, customers out, outage percentage
+- Historical archives dating back to 2014 for trend analysis
+- Near real-time delivery through Oak Ridge's data portal
+- National coverage including remote areas and small utilities
 
 The dataset arrives as time-stamped parquet files organized by year, making it efficient to query specific time periods while maintaining the ability to analyze multi-year trends.
 
@@ -664,37 +664,37 @@ Understanding temporal patterns enables proactive preparation. Utilities can pre
 
 Integrating EAGLE-I outage data transforms grid operations from reactive to proactive:
 
-**1. Real-Time Visibility Enables Response**: 15-minute update frequency provides near real-time situational awareness. Grid operators see developing problems before they cascade.
+1. Real-Time Visibility Enables Response: 15-minute update frequency provides near real-time situational awareness. Grid operators see developing problems before they cascade.
 
-**2. Historical Archives Support Resilience Planning**: Multi-year archives reveal vulnerability patterns. Peak outage seasons, times of day, and regional hotspots become predictable.
+2. Historical Archives Support Resilience Planning: Multi-year archives reveal vulnerability patterns. Peak outage seasons, times of day, and regional hotspots become predictable.
 
-**3. Load Forecasting Gains Accuracy**: Distinguishing outage-driven load drops from demand changes improves forecast accuracy by 15-30% during major events.
+3. Load Forecasting Gains Accuracy: Distinguishing outage-driven load drops from demand changes improves forecast accuracy by 15-30% during major events.
 
-**4. Severity Classification Prioritizes Response**: Automated severity detection (Critical/Major/Significant/Minor) enables resource allocation based on impact.
+4. Severity Classification Prioritizes Response: Automated severity detection (Critical/Major/Significant/Minor) enables resource allocation based on impact.
 
-**5. Spatial Aggregation Reveals Regional Patterns**: County-level data rolls up to state, utility territory, and balancing authority views. Multi-scale analysis reveals cascade patterns.
+5. Spatial Aggregation Reveals Regional Patterns: County-level data rolls up to state, utility territory, and balancing authority views. Multi-scale analysis reveals cascade patterns.
 
-**6. Integration Multiplies Value**: Combining outage data with load forecasts, weather, and transmission maps creates comprehensive grid intelligence.
+6. Integration Multiplies Value: Combining outage data with load forecasts, weather, and transmission maps creates comprehensive grid intelligence.
 
 ## Implementation Strategy
 
 Deploy outage detection and analysis in your operations:
 
-1. **Data Acquisition**: Access EAGLE-I data through Oak Ridge portal. Download historical archives by year.
+1. Data Acquisition: Access EAGLE-I data through Oak Ridge portal. Download historical archives by year.
 
-2. **Service Layer**: Implement EagleiOutageService with temporal queries, state/county filters, and caching.
+2. Service Layer: Implement EagleiOutageService with temporal queries, state/county filters, and caching.
 
-3. **Event Detection**: Build major outage event detection with configurable thresholds (100k, 500k customers).
+3. Event Detection: Build major outage event detection with configurable thresholds (100k, 500k customers).
 
-4. **Temporal Analysis**: Extract hourly, daily, monthly, and seasonal patterns from historical data.
+4. Temporal Analysis: Extract hourly, daily, monthly, and seasonal patterns from historical data.
 
-5. **Load Integration**: Connect outage service to load forecasting pipeline. Adjust forecasts for ongoing/expected outages.
+5. Load Integration: Connect outage service to load forecasting pipeline. Adjust forecasts for ongoing/expected outages.
 
-6. **Severity Classification**: Implement automated severity scoring (Critical/Major/Significant/Minor).
+6. Severity Classification: Implement automated severity scoring (Critical/Major/Significant/Minor).
 
-7. **Alert System**: Generate real-time alerts when outage events exceed thresholds.
+7. Alert System: Generate real-time alerts when outage events exceed thresholds.
 
-8. **Dashboard**: Create web dashboard with outage maps, time series charts, and state summaries.
+8. Dashboard: Create web dashboard with outage maps, time series charts, and state summaries.
 
 The outage detection system described here processes years of 15-minute interval data, identifies major events in milliseconds, and integrates with load forecasting to improve situational awareness. The code provides implementations that handle real-time queries and historical analysis.
 
