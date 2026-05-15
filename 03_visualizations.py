@@ -1,5 +1,3 @@
-import sys
-import os
 
 import logging
 logging.basicConfig(
@@ -16,13 +14,10 @@ Generates publication-quality figures at 300 DPI
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-from matplotlib.patches import Rectangle, FancyBboxPatch, Circle
-from datetime import datetime, timedelta
+from matplotlib.patches import FancyBboxPatch
 
 
 
-from pathlib import Path
 def generate_outage_architecture(plot: bool = False):
     """Generate outage analysis system architecture diagram."""
     if plot:
@@ -201,12 +196,12 @@ def generate_outage_dashboard(plot: bool = False):
         width = 0.35
     
         ax2_1 = ax2
-        bars1 = ax2_1.bar(x - width/2, [c/1000000 for c in total_customers_out], width, 
+        ax2_1.bar(x - width/2, [c/1000000 for c in total_customers_out], width, 
                          label='Total Customers Out (Millions)', 
                          color="#2b2b2b", edgecolor='black', linewidth=1)
     
         ax2_2 = ax2.twinx()
-        bars2 = ax2_2.bar(x + width/2, avg_outage_rate, width, 
+        ax2_2.bar(x + width/2, avg_outage_rate, width, 
                          label='Avg Outage Rate (%)', 
                          color="#a0a0a0", edgecolor='black', linewidth=1)
     
@@ -267,7 +262,7 @@ def generate_outage_dashboard(plot: bool = False):
         colors_months = ["#a0a0a0" if e < 200 else "#a0a0a0" 
                          if e < 250 else "#2b2b2b" for e in total_events]
     
-        bars = ax5.bar(range(12), total_events, color=colors_months, 
+        ax5.bar(range(12), total_events, color=colors_months, 
                        edgecolor='black', linewidth=1.5)
         ax5.set_ylabel('Total Events', fontsize=10, weight='bold')
         ax5.set_title('Monthly Event Count', fontsize=11, weight='bold')
@@ -297,7 +292,7 @@ def generate_outage_dashboard(plot: bool = False):
     # Add annotation
         ax6.annotate('Outage-Driven\nLoad Drop', xy=(13, observed_load[13]), 
                     xytext=(15, 22000),
-                    arrowprops=dict(arrowstyle='->', color='black', lw=1.5),
+                    arrowprops={'arrowstyle': '->', 'color': 'black', 'lw': 1.5},
                     fontsize=9, weight='bold')
     
         plt.suptitle('Outage Detection & Analysis Dashboard', 

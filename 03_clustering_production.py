@@ -22,7 +22,6 @@ from sklearn.metrics import silhouette_score, calinski_harabasz_score
 import hdbscan
 import matplotlib.pyplot as plt
 
-import sys
 # Configuration
 DATA_PATH = Path('../../egrid_all_plants_1996-2023.parquet')
 TARGET_YEAR = 2023
@@ -329,7 +328,7 @@ def main():
     gmm_profiles = profile_clusters(df_clean, gmm_labels, N_CLUSTERS, 'GMM')
     hdbscan_n_clusters = len(set(hdbscan_labels)) - (1 if -1 in hdbscan_labels else 0)
     if hdbscan_n_clusters > 0:
-        hdbscan_profiles = profile_clusters(df_clean, hdbscan_labels, hdbscan_n_clusters, 'HDBSCAN')
+        profile_clusters(df_clean, hdbscan_labels, hdbscan_n_clusters, 'HDBSCAN')
     
     # Visualize
     visualize_results(df_clean, kmeans_labels, gmm_labels, hdbscan_labels, X_scaled, features)
