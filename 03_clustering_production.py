@@ -399,8 +399,8 @@ def visualize_results(
         ax7.set_xticks(x_pos)
         ax7.set_xticklabels(
             [
-                f"{row['Cluster']}\n(n={row['Size']:,})"
-                for _, row in profile_df.iterrows()
+                f"{row.Cluster}\n(n={row.Size:,})"
+                for row in profile_df.itertuples(index=False)
             ]
         )
         ax7.legend(fontsize=10)
