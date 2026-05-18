@@ -1,8 +1,11 @@
 import logging
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from matplotlib.patches import FancyBboxPatch
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 """
@@ -10,10 +13,6 @@ Visualization script for Outage Detection and Analysis Blog
 Generates publication-quality figures at 300 DPI
 """
 
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-from matplotlib.patches import FancyBboxPatch
 
 
 def generate_outage_architecture(plot: bool = False):
@@ -23,7 +22,6 @@ def generate_outage_architecture(plot: bool = False):
 
     fig, ax = plt.subplots(figsize=(14, 9))
     ax.axis("off")
-
     # EAGLE-I data source
     y_source = 8
     source_box = FancyBboxPatch(
@@ -46,7 +44,6 @@ def generate_outage_architecture(plot: bool = False):
         color="white",
         weight="bold",
     )
-
     # Data processing layer
     y_processing = 6.5
     processing_items = [
@@ -54,7 +51,6 @@ def generate_outage_architecture(plot: bool = False):
         {"name": "Real-Time\nIngestion", "x": 2.5, "color": "#696969"},
         {"name": "County\nMapping", "x": 4.5, "color": "#696969"},
     ]
-
     for item in processing_items:
         box = FancyBboxPatch(
             (item["x"], y_processing),
@@ -100,7 +96,6 @@ def generate_outage_architecture(plot: bool = False):
         color="white",
         weight="bold",
     )
-
     # Analysis modules
     y_analysis = 3.5
     modules = [
@@ -109,7 +104,6 @@ def generate_outage_architecture(plot: bool = False):
         {"name": "Temporal\nPatterns", "x": 3.5, "color": "#696969"},
         {"name": "Load\nImpact", "x": 5, "color": "#696969"},
     ]
-
     for module in modules:
         box = FancyBboxPatch(
             (module["x"], y_analysis),
@@ -155,7 +149,6 @@ def generate_outage_architecture(plot: bool = False):
         color="white",
         weight="bold",
     )
-
     # Output layer
     y_output = 0.3
     outputs = [
@@ -164,7 +157,6 @@ def generate_outage_architecture(plot: bool = False):
         {"name": "Web\nDashboard", "x": 3.5},
         {"name": "API\nEndpoints", "x": 5},
     ]
-
     for output in outputs:
         box = FancyBboxPatch(
             (output["x"], y_output),
@@ -202,7 +194,6 @@ def generate_outage_architecture(plot: bool = False):
     )
     ax.add_patch(integration_box)
     ax.text(8.5, 7.5, "System Integration", ha="center", fontsize=11, weight="bold")
-
     integration_items = [
         {"name": "Load Forecasting", "y": 6.8},
         {"name": "Weather Data", "y": 6.1},
@@ -211,7 +202,6 @@ def generate_outage_architecture(plot: bool = False):
         {"name": "Restoration\nTracking", "y": 4},
         {"name": "Reporting", "y": 3.3},
     ]
-
     for item in integration_items:
         box = FancyBboxPatch(
             (7.3, item["y"]),
@@ -266,7 +256,6 @@ def generate_outage_architecture(plot: bool = False):
         ec="black",
         linewidth=2,
     )
-
     # Integration arrows
     for y_pos in [6.8, 5.4, 4]:
         ax.arrow(
@@ -284,7 +273,6 @@ def generate_outage_architecture(plot: bool = False):
 
     ax.set_xlim(-0.5, 10.5)
     ax.set_ylim(-0.5, 9.5)
-
     ax.text(
         5.5,
         9.3,
@@ -293,7 +281,6 @@ def generate_outage_architecture(plot: bool = False):
         fontsize=14,
         weight="bold",
     )
-
     plt.tight_layout()
     plt.savefig("03_outage_analysis_architecture.png", bbox_inches="tight", dpi=300)
     logger.info("✓ Generated: 03_outage_analysis_architecture.png")
@@ -307,14 +294,12 @@ def generate_outage_dashboard(plot: bool = False):
 
     fig = plt.figure(figsize=(16, 10))
     gs = fig.add_gridspec(3, 3, hspace=0.35, wspace=0.35)
-
     # Major outage events timeline
     ax1 = fig.add_subplot(gs[0, :])
     dates = pd.date_range("2024-01-01", periods=12, freq="MS")
     events_critical = [1, 0, 2, 1, 3, 2, 4, 5, 3, 2, 1, 1]
     events_major = [3, 2, 4, 3, 6, 5, 8, 10, 7, 4, 3, 2]
     events_significant = [12, 10, 15, 14, 18, 20, 25, 28, 22, 18, 15, 12]
-
     ax1.bar(
         dates,
         events_critical,
@@ -344,12 +329,9 @@ def generate_outage_dashboard(plot: bool = False):
         edgecolor="black",
         linewidth=1,
     )
-
     ax1.set_xlabel("Month (2024)", fontsize=11, weight="bold")
     ax1.set_ylabel("Number of Events", fontsize=11, weight="bold")
-    ax1.set_title(
-        "Major Outage Events by Severity (2024)", fontsize=12, weight="bold"
-    )
+    ax1.set_title("Major Outage Events by Severity (2024)", fontsize=12, weight="bold")
     ax1.legend(loc="upper right", ncol=3)
     # State outage summary
     ax2 = fig.add_subplot(gs[1, :2])
@@ -374,10 +356,8 @@ def generate_outage_dashboard(plot: bool = False):
         1700000,
     ]
     avg_outage_rate = [3.2, 4.8, 2.1, 5.2, 3.8, 2.9, 2.4, 2.6]
-
     x = np.arange(len(states))
     width = 0.35
-
     ax2_1 = ax2
     ax2_1.bar(
         x - width / 2,
@@ -388,7 +368,6 @@ def generate_outage_dashboard(plot: bool = False):
         edgecolor="black",
         linewidth=1,
     )
-
     ax2_2 = ax2.twinx()
     ax2_2.bar(
         x + width / 2,
@@ -399,7 +378,6 @@ def generate_outage_dashboard(plot: bool = False):
         edgecolor="black",
         linewidth=1,
     )
-
     ax2_1.set_xlabel("State", fontsize=11, weight="bold")
     ax2_1.set_ylabel("Total Customers Out (Millions)", fontsize=10, color="#2b2b2b")
     ax2_2.set_ylabel("Avg Outage Rate (%)", fontsize=10, color="#a0a0a0")
@@ -409,18 +387,15 @@ def generate_outage_dashboard(plot: bool = False):
     ax2_1.tick_params(axis="y", labelcolor="#2b2b2b")
     ax2_2.tick_params(axis="y", labelcolor="#a0a0a0")
     ax2_1.grid(False)
-
     # Legend combining both axes
     lines1, labels1 = ax2_1.get_legend_handles_labels()
     lines2, labels2 = ax2_2.get_legend_handles_labels()
     ax2_1.legend(lines1 + lines2, labels1 + labels2, loc="upper right")
-
     # Severity distribution pie
     ax3 = fig.add_subplot(gs[1, 2])
     severity_labels = ["Critical", "Major", "Significant", "Minor"]
     severity_counts = [28, 67, 209, 896]
     colors_severity = ["#2b2b2b", "#696969", "#a0a0a0", "#d3d3d3"]
-
     wedges, texts, autotexts = ax3.pie(
         severity_counts,
         labels=severity_labels,
@@ -433,7 +408,6 @@ def generate_outage_dashboard(plot: bool = False):
         autotext.set_color("white")
         autotext.set_fontsize(9)
     ax3.set_title("Event Severity Distribution", fontsize=11, weight="bold")
-
     # Hourly outage pattern
     ax4 = fig.add_subplot(gs[2, 0])
     hours = np.arange(24)
@@ -463,7 +437,6 @@ def generate_outage_dashboard(plot: bool = False):
         1600,
         1400,
     ]
-
     ax4.plot(
         hours,
         avg_customers_out,
@@ -486,7 +459,6 @@ def generate_outage_dashboard(plot: bool = False):
     ax4.set_title("Hourly Outage Pattern", fontsize=11, weight="bold")
     ax4.legend(fontsize=8)
     ax4.set_xticks(hours[::3])
-
     # Monthly pattern
     ax5 = fig.add_subplot(gs[2, 1])
     months = [
@@ -505,10 +477,8 @@ def generate_outage_dashboard(plot: bool = False):
     ]
     total_events = [125, 98, 142, 156, 188, 205, 268, 295, 234, 186, 145, 128]
     colors_months = [
-        "#a0a0a0" if e < 200 else "#a0a0a0" if e < 250 else "#2b2b2b"
-        for e in total_events
+        "#a0a0a0" if e < 200 else "#a0a0a0" if e < 250 else "#2b2b2b" for e in total_events
     ]
-
     ax5.bar(
         range(12),
         total_events,
@@ -529,7 +499,6 @@ def generate_outage_dashboard(plot: bool = False):
         label="High Activity Threshold",
     )
     ax5.legend(fontsize=8)
-
     # Load impact analysis
     ax6 = fig.add_subplot(gs[2, 2])
     time_points = np.arange(24)
@@ -537,7 +506,6 @@ def generate_outage_dashboard(plot: bool = False):
     observed_load = forecast_load.copy()
     # Simulate outage event from hour 10-16
     observed_load[10:16] *= 0.75  # 25% load drop during outage
-
     ax6.plot(
         time_points,
         forecast_load,
@@ -567,11 +535,7 @@ def generate_outage_dashboard(plot: bool = False):
         fontsize=9,
         weight="bold",
     )
-
-    plt.suptitle(
-        "Outage Detection & Analysis Dashboard", fontsize=14, weight="bold", y=0.995
-    )
-
+    plt.suptitle("Outage Detection & Analysis Dashboard", fontsize=14, weight="bold", y=0.995)
     plt.savefig("03_outage_analysis_dashboard.png", bbox_inches="tight", dpi=300)
     logger.info("✓ Generated: 03_outage_analysis_dashboard.png")
     plt.close()
@@ -584,14 +548,12 @@ def generate_temporal_patterns(plot: bool = False):
 
     fig = plt.figure(figsize=(14, 10))
     gs = fig.add_gridspec(2, 2, hspace=0.3, wspace=0.3)
-
     # Hourly pattern with confidence intervals
     ax1 = fig.add_subplot(gs[0, :])
     hours = np.arange(24)
     avg_outages = 1200 + 800 * np.sin((hours - 8) * np.pi / 12) ** 2
     upper_bound = avg_outages * 1.5
     lower_bound = avg_outages * 0.5
-
     ax1.plot(
         hours,
         avg_outages,
@@ -609,7 +571,6 @@ def generate_temporal_patterns(plot: bool = False):
         color="#2b2b2b",
         label="Confidence Interval",
     )
-
     # Highlight peak hours
     peak_start = 14
     peak_end = 19
@@ -623,7 +584,6 @@ def generate_temporal_patterns(plot: bool = False):
         weight="bold",
         color="#2b2b2b",
     )
-
     ax1.set_xlabel("Hour of Day", fontsize=11, weight="bold")
     ax1.set_ylabel("Average Customers Out (1000s)", fontsize=11, weight="bold")
     ax1.set_title(
@@ -633,19 +593,12 @@ def generate_temporal_patterns(plot: bool = False):
     )
     ax1.legend(loc="upper left", fontsize=9)
     ax1.set_xticks(hours[::2])
-
     # Day of week pattern
     ax2 = fig.add_subplot(gs[1, 0])
     dow_labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
     dow_events = [145, 152, 148, 156, 168, 195, 186]
-    dow_colors = [
-        "#696969" if e < 160 else "#a0a0a0" if e < 180 else "#2b2b2b"
-        for e in dow_events
-    ]
-
-    bars = ax2.bar(
-        range(7), dow_events, color=dow_colors, edgecolor="black", linewidth=1.5
-    )
+    dow_colors = ["#696969" if e < 160 else "#a0a0a0" if e < 180 else "#2b2b2b" for e in dow_events]
+    bars = ax2.bar(range(7), dow_events, color=dow_colors, edgecolor="black", linewidth=1.5)
     ax2.set_ylabel("Number of Events", fontsize=10, weight="bold")
     ax2.set_title("Outage Events by Day of Week", fontsize=11, weight="bold")
     ax2.set_xticks(range(7))
@@ -665,7 +618,6 @@ def generate_temporal_patterns(plot: bool = False):
     ax3 = fig.add_subplot(gs[1, 1])
     months = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"]
     customer_hours = [2.8, 2.2, 3.1, 3.4, 4.2, 4.8, 6.2, 6.8, 5.4, 4.1, 3.2, 2.9]
-
     ax3.plot(
         range(12),
         customer_hours,
@@ -676,7 +628,6 @@ def generate_temporal_patterns(plot: bool = False):
         label="Customer-Outage-Hours (Millions)",
     )
     ax3.fill_between(range(12), customer_hours, alpha=0.3, color="#2b2b2b")
-
     # Highlight summer peak
     ax3.axvspan(5, 8, alpha=0.2, color="#a0a0a0")
     ax3.text(
@@ -688,7 +639,6 @@ def generate_temporal_patterns(plot: bool = False):
         weight="bold",
         color="#2b2b2b",
     )
-
     ax3.set_xlabel("Month", fontsize=10, weight="bold")
     ax3.set_ylabel("Customer-Outage-Hours (Millions)", fontsize=10, weight="bold")
     ax3.set_title("Seasonal Outage Pattern", fontsize=11, weight="bold")
@@ -696,7 +646,6 @@ def generate_temporal_patterns(plot: bool = False):
     ax3.set_xticklabels(months)
     ax3.legend(fontsize=9)
     plt.suptitle("Temporal Outage Pattern Analysis", fontsize=14, weight="bold")
-
     plt.savefig("03_outage_temporal_patterns.png", bbox_inches="tight", dpi=300)
     logger.info("✓ Generated: 03_outage_temporal_patterns.png")
     plt.close()
@@ -704,11 +653,9 @@ def generate_temporal_patterns(plot: bool = False):
 
 if __name__ == "__main__":
     logger.info("Generating visualizations for Outage Detection & Analysis Blog...\n")
-
     generate_outage_architecture()
     generate_outage_dashboard()
     generate_temporal_patterns()
-
     logger.info("\n✓ All visualizations generated successfully!")
     logger.info("  - 03_outage_analysis_architecture.png")
     logger.info("  - 03_outage_analysis_dashboard.png")
