@@ -11,14 +11,7 @@ Weather-related outages are especially disruptive. High winds bring down lines, 
 
 Traditionally, utilities have been reactive: storms strike, outages happen, and crews are dispatched. While vegetation management and equipment hardening programs help, they often follow fixed cycles or broad risk maps rather than precise, predictive targeting. This reactive posture leaves utilities vulnerable to both operational strain and customer frustration.
 
-## About
 
-Place the code for this article in this repository.
-The original article export is saved as `article.md`.
-
-## Files
-
-Add your `.ipynb`, `.py`, `.yaml`, `.js`, `.ts`, or other project files here.
 
 ## Disclaimer
 
